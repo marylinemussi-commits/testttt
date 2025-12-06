@@ -148,6 +148,29 @@ body {
     box-shadow: var(--shadow);
 }
 
+.btn-direct-link {
+    display: block;
+    padding: 0.75rem 1rem;
+    background: var(--bg-light);
+    border: 2px solid var(--success-color);
+    color: var(--success-color);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s;
+}
+
+.btn-direct-link:hover {
+    background: var(--success-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
 /* Navbar */
 .navbar {
     background: var(--bg-dark);

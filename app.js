@@ -103,3 +103,31 @@ function quickLogin(username, password) {
 // Rendre la fonction accessible globalement
 window.quickLogin = quickLogin;
 
+// Fonction pour accéder directement au dashboard
+function goToDashboard(type) {
+    if (typeof initData === 'function') {
+        initData();
+    }
+    
+    // Vérifier si un utilisateur est déjà connecté
+    const currentUser = getCurrentUser();
+    
+    if (currentUser && currentUser.type === type) {
+        // L'utilisateur est déjà connecté avec le bon type
+        if (type === 'academique') {
+            window.location.href = 'dashboard-academique.html';
+        } else if (type === 'etablissement') {
+            window.location.href = 'dashboard-etablissement.html';
+        }
+    } else {
+        // Connecter automatiquement avec le compte par défaut
+        if (type === 'academique') {
+            quickLogin('admin', 'admin123');
+        } else if (type === 'etablissement') {
+            quickLogin('college', 'college123');
+        }
+    }
+}
+
+window.goToDashboard = goToDashboard;
+
