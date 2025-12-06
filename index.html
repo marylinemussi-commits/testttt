@@ -33,10 +33,10 @@
             <div class="login-info">
                 <p><strong>Comptes de démonstration :</strong></p>
                 <div class="quick-login-buttons">
-                    <button class="btn-quick-login" onclick="quickLogin('admin', 'admin123')">
+                    <button class="btn-quick-login" id="btnLoginAdmin" onclick="quickLogin('admin', 'admin123')">
                         🔑 Connexion Académique (admin)
                     </button>
-                    <button class="btn-quick-login" onclick="quickLogin('college', 'college123')">
+                    <button class="btn-quick-login" id="btnLoginCollege" onclick="quickLogin('college', 'college123')">
                         🔑 Connexion Établissement (college)
                     </button>
                 </div>
@@ -60,8 +60,24 @@
     </div>
     
     <script src="data.js"></script>
+    <script>
+        // S'assurer que initData est appelée immédiatement
+        if (typeof initData === 'function') {
+            initData();
+        }
+    </script>
     <script src="auth.js"></script>
     <script src="app.js"></script>
+    <script>
+        // Vérification finale que tout est chargé
+        window.addEventListener('load', () => {
+            console.log('Page chargée. Fonctions disponibles:');
+            console.log('initData:', typeof initData);
+            console.log('login:', typeof login);
+            console.log('quickLogin:', typeof quickLogin);
+            console.log('goToDashboard:', typeof goToDashboard);
+        });
+    </script>
 </body>
 </html>
 
