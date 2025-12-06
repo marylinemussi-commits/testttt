@@ -3,15 +3,26 @@
 let currentUser = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialiser les données
+    if (typeof initData === 'function') {
+        initData();
+    }
+    
     if (!checkAuth()) return;
     
     currentUser = getCurrentUser();
-    if (currentUser.type !== 'etablissement') {
+    
+    // Vérifier que l'utilisateur est de type établissement
+    if (!currentUser || currentUser.type !== 'etablissement') {
+        alert('Accès refusé. Vous devez être connecté en tant qu\'établissement.');
         window.location.href = 'index.html';
         return;
     }
     
-    document.getElementById('currentUser').textContent = currentUser.fullName || currentUser.username;
+    const currentUserElement = document.getElementById('currentUser');
+    if (currentUserElement) {
+        currentUserElement.textContent = currentUser.fullName || currentUser.username;
+    }
     
     loadCollegeData();
     setupEventListeners();

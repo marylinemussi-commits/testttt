@@ -42,9 +42,17 @@ document.addEventListener('DOMContentLoaded', () => {
             loginMessage.textContent = 'Connexion réussie, redirection...';
             loginMessage.className = 'message success';
             loginMessage.style.display = 'block';
+            
+            // Redirection immédiate
             setTimeout(() => {
-                redirectByUserType();
-            }, 500);
+                if (user.type === 'academique') {
+                    window.location.href = 'dashboard-academique.html';
+                } else if (user.type === 'etablissement') {
+                    window.location.href = 'dashboard-etablissement.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
+            }, 300);
         } else {
             loginMessage.textContent = 'Nom d\'utilisateur ou mot de passe incorrect';
             loginMessage.className = 'message error';
@@ -74,9 +82,17 @@ function quickLogin(username, password) {
         loginMessage.textContent = 'Connexion réussie, redirection...';
         loginMessage.className = 'message success';
         loginMessage.style.display = 'block';
+        
+        // Redirection immédiate
         setTimeout(() => {
-            redirectByUserType();
-        }, 500);
+            if (user.type === 'academique') {
+                window.location.href = 'dashboard-academique.html';
+            } else if (user.type === 'etablissement') {
+                window.location.href = 'dashboard-etablissement.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+        }, 300);
     } else {
         loginMessage.textContent = 'Erreur de connexion';
         loginMessage.className = 'message error';

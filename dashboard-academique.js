@@ -3,10 +3,26 @@
 let currentUser = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialiser les données
+    if (typeof initData === 'function') {
+        initData();
+    }
+    
     if (!checkAuth()) return;
     
     currentUser = getCurrentUser();
-    document.getElementById('currentUser').textContent = currentUser.fullName || currentUser.username;
+    
+    // Vérifier que l'utilisateur est de type académique
+    if (currentUser.type !== 'academique') {
+        alert('Accès refusé. Vous devez être connecté en tant qu\'administrateur académique.');
+        window.location.href = 'index.html';
+        return;
+    }
+    
+    const currentUserElement = document.getElementById('currentUser');
+    if (currentUserElement) {
+        currentUserElement.textContent = currentUser.fullName || currentUser.username;
+    }
     
     loadAllData();
     setupEventListeners();
