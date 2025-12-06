@@ -37,7 +37,26 @@ function initData() {
 
 // Gestion des utilisateurs
 function getUsers() {
-    return JSON.parse(localStorage.getItem('users') || '[]');
+    try {
+        const usersStr = localStorage.getItem('users');
+        if (!usersStr) {
+            return [];
+        }
+        const users = JSON.parse(usersStr);
+        // Vérifier que c'est un tableau
+        if (Array.isArray(users)) {
+            return users;
+        } else {
+            console.error('users n\'est pas un tableau, réinitialisation...');
+            initData();
+            return JSON.parse(localStorage.getItem('users') || '[]');
+        }
+    } catch (e) {
+        console.error('Erreur lors de la lecture des utilisateurs:', e);
+        // Réinitialiser en cas d'erreur
+        initData();
+        return JSON.parse(localStorage.getItem('users') || '[]');
+    }
 }
 
 function addUser(user) {

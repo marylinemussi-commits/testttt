@@ -1,13 +1,42 @@
 // Système d'authentification
 
 function login(username, password) {
+    console.log('Fonction login appelée avec:', username);
+    
     // S'assurer que les données sont initialisées
     if (typeof initData === 'function') {
         initData();
     }
     
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const user = users.find(u => u.username === username && u.password === password);
+    // Utiliser getUsers() qui gère les erreurs
+    let users = [];
+    if (typeof getUsers === 'function') {
+        users = getUsers();
+    } else {
+        // Fallback si getUsers n'est pas disponible
+        try {
+            const usersStr = localStorage.getItem('users') || '[]';
+            users = JSON.parse(usersStr);
+            if (!Array.isArray(users)) {
+                users = [];
+            }
+        } catch (e) {
+            console.error('Erreur lors de la lecture des utilisateurs:', e);
+            users = [];
+        }
+    }
+    
+    console.log('Utilisateurs trouvés:', users.length);
+    
+    // Vérifier que users est un tableau
+    if (!Array.isArray(users)) {
+        console.error('users n\'est pas un tableau:', typeof users, users);
+        return null;
+    }
+    
+    // Chercher l'utilisateur
+    const user = users.find(u => u && u.username === username && u.password === password);
+    console.log('Utilisateur trouvé:', user ? 'Oui' : 'Non');
     
     if (user) {
         sessionStorage.setItem('currentUser', JSON.stringify(user));
