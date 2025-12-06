@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Académique - Banque Académique</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1>🏦 Panel Académique</h1>
+            <div class="nav-user">
+                <span id="currentUser"></span>
+                <button onclick="logout()" class="btn-logout">Déconnexion</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-grid">
+            <!-- Menu latéral -->
+            <aside class="sidebar">
+                <ul class="menu">
+                    <li><a href="#" onclick="showSection('virements')" class="active">💸 Gestion Virements</a></li>
+                    <li><a href="#" onclick="showSection('create-virement')">➕ Créer Virement</a></li>
+                    <li><a href="#" onclick="showSection('users')">👥 Gestion Utilisateurs</a></li>
+                    <li><a href="#" onclick="showSection('cards')">💳 Générer Cartes</a></li>
+                    <li><a href="#" onclick="showSection('add-money')">💰 Générer Argent</a></li>
+                    <li><a href="#" onclick="showSection('balances')">📊 Soldes Comptes</a></li>
+                    <li><a href="#" onclick="showSection('history')">📜 Historique Paiements</a></li>
+                </ul>
+            </aside>
+
+            <!-- Contenu principal -->
+            <main class="main-content">
+                <!-- Section Gestion Virements -->
+                <section id="virements" class="content-section active">
+                    <h2>💸 Gestion des Virements</h2>
+                    <div class="section-content">
+                        <div class="table-container">
+                            <table id="virementsTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>De</th>
+                                        <th>Vers</th>
+                                        <th>Montant</th>
+                                        <th>Date</th>
+                                        <th>Statut</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="virementsTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Créer Virement -->
+                <section id="create-virement" class="content-section">
+                    <h2>➕ Créer un Virement</h2>
+                    <div class="section-content">
+                        <form id="createVirementForm" class="form-card">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Compte émetteur *</label>
+                                    <select id="fromAccount" required>
+                                        <option value="">Sélectionner un compte</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Compte destinataire *</label>
+                                    <select id="toAccount" required>
+                                        <option value="">Sélectionner un compte</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Montant (€) *</label>
+                                <input type="number" id="amount" step="0.01" min="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Libellé</label>
+                                <input type="text" id="label" placeholder="Description du virement">
+                            </div>
+                            <button type="submit" class="btn-primary">Créer le virement</button>
+                            <div id="virementMessage" class="message"></div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Section Gestion Utilisateurs -->
+                <section id="users" class="content-section">
+                    <h2>👥 Gestion des Utilisateurs</h2>
+                    <div class="section-content">
+                        <div class="action-bar">
+                            <button onclick="showCreateUserForm()" class="btn-primary">➕ Créer un utilisateur</button>
+                        </div>
+                        <div id="createUserForm" class="form-card" style="display: none; margin-bottom: 2rem;">
+                            <h3>Nouvel utilisateur</h3>
+                            <form id="userForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Nom d'utilisateur *</label>
+                                        <input type="text" id="newUsername" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Mot de passe *</label>
+                                        <input type="password" id="newPassword" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Type *</label>
+                                        <select id="userType" required>
+                                            <option value="">Sélectionner</option>
+                                            <option value="academique">Académique</option>
+                                            <option value="etablissement">Établissement</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nom complet</label>
+                                        <input type="text" id="fullName">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn-primary">Créer</button>
+                                <button type="button" onclick="hideCreateUserForm()" class="btn-secondary">Annuler</button>
+                                <div id="userMessage" class="message"></div>
+                            </form>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nom d'utilisateur</th>
+                                        <th>Type</th>
+                                        <th>Nom complet</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Générer Cartes -->
+                <section id="cards" class="content-section">
+                    <h2>💳 Générer des Cartes Bleues</h2>
+                    <div class="section-content">
+                        <form id="createCardForm" class="form-card">
+                            <div class="form-group">
+                                <label>Compte *</label>
+                                <select id="cardAccount" required>
+                                    <option value="">Sélectionner un compte</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Type de carte *</label>
+                                <select id="cardType" required>
+                                    <option value="debit">Carte de débit</option>
+                                    <option value="credit">Carte de crédit</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn-primary">Générer la carte</button>
+                            <div id="cardMessage" class="message"></div>
+                        </form>
+                        <div class="table-container" style="margin-top: 2rem;">
+                            <h3>Cartes générées</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Numéro</th>
+                                        <th>Compte</th>
+                                        <th>Type</th>
+                                        <th>Date expiration</th>
+                                        <th>CVV</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cardsTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Générer Argent -->
+                <section id="add-money" class="content-section">
+                    <h2>💰 Générer de l'Argent</h2>
+                    <div class="section-content">
+                        <form id="addMoneyForm" class="form-card">
+                            <div class="form-group">
+                                <label>Compte *</label>
+                                <select id="moneyAccount" required>
+                                    <option value="">Sélectionner un compte</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Montant (€) *</label>
+                                <input type="number" id="moneyAmount" step="0.01" min="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Raison</label>
+                                <input type="text" id="moneyReason" placeholder="Raison de l'ajout">
+                            </div>
+                            <button type="submit" class="btn-primary">Ajouter l'argent</button>
+                            <div id="moneyMessage" class="message"></div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Section Soldes Comptes -->
+                <section id="balances" class="content-section">
+                    <h2>📊 Soldes des Comptes</h2>
+                    <div class="section-content">
+                        <div class="cards-grid">
+                            <div id="balancesCards"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Historique -->
+                <section id="history" class="content-section">
+                    <h2>📜 Historique des Paiements</h2>
+                    <div class="section-content">
+                        <div class="filters">
+                            <select id="historyAccountFilter">
+                                <option value="">Tous les comptes</option>
+                            </select>
+                            <input type="date" id="historyDateFilter">
+                            <button onclick="filterHistory()" class="btn-secondary">Filtrer</button>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Compte</th>
+                                        <th>Type</th>
+                                        <th>Montant</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="historyTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="auth.js"></script>
+    <script src="dashboard-academique.js"></script>
+</body>
+</html>
+

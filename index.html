@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banque Académique - Connexion</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h1>🏦 Banque Académique</h1>
+                <p>Système de gestion bancaire</p>
+            </div>
+            
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="username">Nom d'utilisateur</label>
+                    <input type="text" id="username" name="username" required autocomplete="username">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password">
+                </div>
+                
+                <div id="loginMessage" class="message"></div>
+                
+                <button type="submit" class="btn-primary">Se connecter</button>
+            </form>
+            
+            <div class="login-info">
+                <p><strong>Comptes de démonstration :</strong></p>
+                <div class="quick-login-buttons">
+                    <button class="btn-quick-login" onclick="quickLogin('admin', 'admin123')">
+                        🔑 Connexion Académique (admin)
+                    </button>
+                    <button class="btn-quick-login" onclick="quickLogin('college', 'college123')">
+                        🔑 Connexion Établissement (college)
+                    </button>
+                </div>
+                <p style="margin-top: 1rem; font-size: 0.875rem;">
+                    <strong>Académique :</strong> admin / admin123<br>
+                    <strong>Établissement :</strong> college / college123
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="auth.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+
