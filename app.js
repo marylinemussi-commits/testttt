@@ -1,105 +1,148 @@
 // Gestion de la page de connexion
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Attendre que tous les scripts soient chargés
-    setTimeout(() => {
-        // S'assurer que les données sont initialisées
-        if (typeof initData === 'function') {
-            initData();
-        } else {
-            console.error('initData n\'est pas définie. Vérifiez que data.js est chargé.');
+// Fonction pour gérer la soumission du formulaire
+function handleLoginSubmit(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    console.log('Formulaire soumis');
+    
+    // S'assurer que les données sont initialisées
+    if (typeof initData === 'function') {
+        initData();
+    }
+    
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    const loginMessage = document.getElementById('loginMessage');
+    
+    console.log('Tentative de connexion avec:', username);
+    
+    if (!username || !password) {
+        if (loginMessage) {
+            loginMessage.textContent = 'Veuillez remplir tous les champs';
+            loginMessage.className = 'message error';
+            loginMessage.style.display = 'block';
+        }
+        return false;
+    }
+    
+    if (typeof login !== 'function') {
+        console.error('Fonction login non disponible');
+        if (loginMessage) {
+            loginMessage.textContent = 'Erreur système. Rechargez la page.';
+            loginMessage.className = 'message error';
+            loginMessage.style.display = 'block';
+        }
+        return false;
+    }
+    
+    const user = login(username, password);
+    console.log('Résultat login:', user);
+    
+    if (user) {
+        if (loginMessage) {
+            loginMessage.textContent = 'Connexion réussie, redirection...';
+            loginMessage.className = 'message success';
+            loginMessage.style.display = 'block';
         }
         
-        const loginForm = document.getElementById('loginForm');
-        const loginMessage = document.getElementById('loginMessage');
-        
-        if (!loginForm) {
-            console.error('Formulaire de connexion introuvable');
+        // Redirection immédiate
+        setTimeout(() => {
+            if (user.type === 'academique') {
+                window.location.href = 'dashboard-academique.html';
+            } else if (user.type === 'etablissement') {
+                window.location.href = 'dashboard-etablissement.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+        }, 300);
+        return false;
+    } else {
+        if (loginMessage) {
+            loginMessage.textContent = 'Nom d\'utilisateur ou mot de passe incorrect';
+            loginMessage.className = 'message error';
+            loginMessage.style.display = 'block';
+        }
+        return false;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM chargé');
+    
+    // S'assurer que les données sont initialisées
+    if (typeof initData === 'function') {
+        initData();
+        console.log('Données initialisées');
+    } else {
+        console.error('initData n\'est pas définie. Vérifiez que data.js est chargé.');
+    }
+    
+    const loginForm = document.getElementById('loginForm');
+    const loginMessage = document.getElementById('loginMessage');
+    
+    if (!loginForm) {
+        console.error('Formulaire de connexion introuvable');
+        return;
+    }
+    
+    console.log('Formulaire trouvé, ajout de l\'événement submit');
+    
+    // Vérifier si l'utilisateur est déjà connecté
+    if (typeof getCurrentUser === 'function') {
+        const currentUser = getCurrentUser();
+        if (currentUser) {
+            console.log('Utilisateur déjà connecté:', currentUser);
+            if (typeof redirectByUserType === 'function') {
+                redirectByUserType();
+            }
             return;
         }
-        
-        // Vérifier si l'utilisateur est déjà connecté
-        if (typeof getCurrentUser === 'function') {
-            const currentUser = getCurrentUser();
-            if (currentUser) {
-                if (typeof redirectByUserType === 'function') {
-                    redirectByUserType();
-                }
-                return;
-            }
-        }
-        
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            
-            if (!username || !password) {
-                if (loginMessage) {
-                    loginMessage.textContent = 'Veuillez remplir tous les champs';
-                    loginMessage.className = 'message error';
-                    loginMessage.style.display = 'block';
-                }
-                return;
-            }
-            
-            if (typeof login !== 'function') {
-                console.error('Fonction login non disponible');
-                if (loginMessage) {
-                    loginMessage.textContent = 'Erreur système. Rechargez la page.';
-                    loginMessage.className = 'message error';
-                    loginMessage.style.display = 'block';
-                }
-                return;
-            }
-            
-            const user = login(username, password);
-            
-            if (user) {
-                if (loginMessage) {
-                    loginMessage.textContent = 'Connexion réussie, redirection...';
-                    loginMessage.className = 'message success';
-                    loginMessage.style.display = 'block';
-                }
-                
-                // Redirection immédiate
-                setTimeout(() => {
-                    if (user.type === 'academique') {
-                        window.location.href = 'dashboard-academique.html';
-                    } else if (user.type === 'etablissement') {
-                        window.location.href = 'dashboard-etablissement.html';
-                    } else {
-                        window.location.href = 'index.html';
-                    }
-                }, 300);
-            } else {
-                if (loginMessage) {
-                    loginMessage.textContent = 'Nom d\'utilisateur ou mot de passe incorrect';
-                    loginMessage.className = 'message error';
-                    loginMessage.style.display = 'block';
-                }
-            }
+    }
+    
+    // Ajouter l'événement submit
+    loginForm.addEventListener('submit', handleLoginSubmit);
+    
+    // Ajouter aussi un gestionnaire sur le bouton directement (au cas où)
+    const submitButton = document.getElementById('submitBtn');
+    if (submitButton) {
+        submitButton.addEventListener('click', function(e) {
+            console.log('Bouton submit cliqué directement');
+            // Ne pas empêcher le submit du formulaire, laisser handleLoginSubmit gérer
         });
-        
-        // Ajouter des gestionnaires d'événements pour les boutons de connexion rapide
-        const btnLoginAdmin = document.getElementById('btnLoginAdmin');
-        const btnLoginCollege = document.getElementById('btnLoginCollege');
-        
-        if (btnLoginAdmin) {
-            btnLoginAdmin.addEventListener('click', (e) => {
-                e.preventDefault();
-                quickLogin('admin', 'admin123');
-            });
-        }
-        
-        if (btnLoginCollege) {
-            btnLoginCollege.addEventListener('click', (e) => {
-                e.preventDefault();
-                quickLogin('college', 'college123');
-            });
-        }
-    }, 100);
+    }
+    
+    // Ajouter aussi un gestionnaire sur le bouton directement
+    const submitButton = loginForm.querySelector('button[type="submit"]');
+    if (submitButton) {
+        submitButton.addEventListener('click', (e) => {
+            console.log('Bouton cliqué');
+            // Le submit sera géré par le formulaire
+        });
+    }
+    
+    // Ajouter des gestionnaires d'événements pour les boutons de connexion rapide
+    const btnLoginAdmin = document.getElementById('btnLoginAdmin');
+    const btnLoginCollege = document.getElementById('btnLoginCollege');
+    
+    if (btnLoginAdmin) {
+        btnLoginAdmin.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Bouton admin cliqué');
+            quickLogin('admin', 'admin123');
+        });
+    }
+    
+    if (btnLoginCollege) {
+        btnLoginCollege.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Bouton college cliqué');
+            quickLogin('college', 'college123');
+        });
+    }
 });
 
 // Fonction de connexion rapide
